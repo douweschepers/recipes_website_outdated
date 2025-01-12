@@ -7,8 +7,19 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Steps to get everything running: 
+- docker-compose up --build
+- cd into deployment folder in new terminal
+- docker-compose exec mysql sh
+- mysql -uroot -proot
+- Check if user exists by: SELECT user, host FROM mysql.user WHERE user = 'douwe';
+- Could create a new user by: CREATE USER 'douwe'@'%' IDENTIFIED BY 'password';
+- GRANT ALL PRIVILEGES ON *.* TO 'douwe'@'%' WITH GRANT OPTION;
+- now access by http://localhost:8080/
+
+
 ## About Laravel
-Hi
+
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
 - [Simple, fast routing engine](https://laravel.com/docs/routing).
