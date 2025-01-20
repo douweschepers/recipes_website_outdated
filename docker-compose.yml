@@ -11,7 +11,7 @@ services:
     volumes:
       - ./:/var/www/html/
       - ./logs/nginx:/var/log/nginx/
-    container_name: nginx
+    container_name: nginx_recipes_outdated
   php:
     build:
       context: deployment
@@ -21,11 +21,11 @@ services:
     volumes:
       - ./:/var/www/html/
       - ./logs/php.log:/var/log/fpm-php.www.log
-    container_name: php
+    container_name: php_recipes_outdated
     expose:
       - "9000"
   mysql:
-    container_name: db
+    container_name: db_recipes_outdated
     restart: always
     image: mysql:latest
     platform: linux/x86_64

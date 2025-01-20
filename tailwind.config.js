@@ -11,9 +11,12 @@ export default {
 
     theme: {
         extend: {
-            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },
+	        fontFamily: {
+		        sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+	        },
+	        colors: {
+		        recipeOrange: 'rgb(255, 125, 64)',
+	        },
         },
     },
 
