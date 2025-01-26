@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\RecipePosted;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class RecipeController extends Controller
 {
@@ -12,8 +14,8 @@ class RecipeController extends Controller
      */
     public function index()
     {
+
 	    return view('recipes/index', [ "recipes" => Recipe::all()]);
-	    //
     }
 
     /**
@@ -21,7 +23,7 @@ class RecipeController extends Controller
      */
     public function create()
     {
-        //
+		return view('recipes/create');
     }
 
     /**
@@ -29,7 +31,22 @@ class RecipeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+	    $request->validate([
+		    'title' => ['required', 'min:3'],
+		    'description' => ['required'],
+	    ]);
+
+	    Recipe::create([
+		    'title' => request('title'),
+		    'description' => request('description'),
+
+	    ]);
+
+//	    Mail::to($recipe->employer->user)->queue(
+//		    new RecipePosted($recipe)
+//	    );
+
+	    return redirect()->route('recipes.index')->with('message', 'recipe Created');
     }
 
     /**
@@ -37,7 +54,7 @@ class RecipeController extends Controller
      */
     public function show(Recipe $recipe)
     {
-        //
+	    return view('recipes/show', [ "recipe" => $recipe]);
     }
 
     /**

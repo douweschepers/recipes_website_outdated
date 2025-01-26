@@ -18,8 +18,8 @@ class RecipeFactory extends Factory
     public function definition(): array
     {
         return [
-			'title' => fake()->text('title'),
-	        'description' => fake()->text('description'),
+			'title' => 'Title of the recipe',
+	        'description' => 'The description of the recipe',
         ];
     }
 }

@@ -16,6 +16,8 @@
 - Could create a new user by: CREATE USER 'douwe'@'%' IDENTIFIED BY 'password';
 - GRANT ALL PRIVILEGES ON *.* TO 'douwe'@'%' WITH GRANT OPTION;
 - now access by http://localhost:8080/
+- To start the front to reload on everything you add run:  npx vite
+  - this ensures that if you include new things that are not yet loaded in your tailwind, they will be pulled in
 
 
 ## About Laravel
