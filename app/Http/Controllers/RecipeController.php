@@ -14,8 +14,9 @@ class RecipeController extends Controller
      */
     public function index()
     {
-
-	    return view('recipes/index', [ "recipes" => Recipe::all()]);
+		$userID = auth()->id();
+	    $recipes = Recipe::where('user_id', $userID)->latest()->simplePaginate(8);
+	    return view('recipes/index', [ "recipes" => $recipes]);
     }
 
     /**
@@ -39,7 +40,8 @@ class RecipeController extends Controller
 	    Recipe::create([
 		    'title' => request('title'),
 		    'description' => request('description'),
-
+		    'instructions' => request('instructions'),
+		    'user_id' => auth()->id()
 	    ]);
 
 //	    Mail::to($recipe->employer->user)->queue(

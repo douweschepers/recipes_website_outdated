@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,6 +21,8 @@ class RecipeFactory extends Factory
         return [
 			'title' => 'Title of the recipe',
 	        'description' => 'The description of the recipe',
+	        'instructions' => 'The instructions for the recipe',
+	        'user_id' => User::factory(),
         ];
     }
 }

@@ -19,6 +19,10 @@
 - To start the front to reload on everything you add run:  npx vite
   - this ensures that if you include new things that are not yet loaded in your tailwind, they will be pulled in
 
+## Usefull tips:
+- use `scripts/run-artisan.sh migrate:fresh --seed` to reset the database and seed it with the default data
+- use first run `scripts/run-artisan.sh tinker` and then `App\Models\Recipe::factory()->create()` to run the basic seeder for some recipes and a user
+
 
 ## About Laravel
 
