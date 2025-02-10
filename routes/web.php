@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecipeController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,9 @@ Route::middleware('auth')->group(function () {
 	// Store new recipe
 	Route::post('/recipe', [RecipeController::class, 'store'])->name('recipe.store');
 });
+
+
+Route::post('/ingredient', [IngredientController::class,'store'])->middleware('auth')->name('ingredient.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

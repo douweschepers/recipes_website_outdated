@@ -21,6 +21,7 @@ class IngredientController extends Controller
      */
     public function create()
     {
+		dd("dueze");
         //
     }
 
@@ -29,7 +30,19 @@ class IngredientController extends Controller
      */
     public function store(StoreIngredientRequest $request)
     {
-        //
+		dd('hello from controller');
+        // store the ingredient
+	    $request->validate([
+		    'name' => ['required'],
+		    'measurement' => ['required'],
+	    ]);
+
+	    Ingredient::create([
+		    'name' => request('name'),
+		    'measurement' => request('measurement'),
+		    'default_quantity' => request('defaultQuantity'),
+	    ]);
+
     }
 
     /**

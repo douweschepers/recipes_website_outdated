@@ -26,7 +26,6 @@ services:
       - "9000"
   mysql:
     container_name: db_recipes_outdated
-    restart: always
     image: mysql:latest
     platform: linux/x86_64
     ports:
