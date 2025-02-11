@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 			$table->text('name');
 	        $table->enum('measurement',['grams','milliliters','pieces']);
-			$table->float('default_quantity');
+			$table->float('default_quantity')->default(1.0);
             $table->timestamps();
         });
 	    Schema::create('ingredient_recipe', function (Blueprint $table) {

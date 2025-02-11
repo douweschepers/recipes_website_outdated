@@ -30,7 +30,7 @@ class IngredientController extends Controller
      */
     public function store(StoreIngredientRequest $request)
     {
-		dd('hello from controller');
+//		dd('hello from controller');
         // store the ingredient
 	    $request->validate([
 		    'name' => ['required'],

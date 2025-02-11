@@ -11,6 +11,7 @@ class Ingredient extends Model
 {
     /** @use HasFactory<\Database\Factories\IngredientFactory> */
     use HasFactory;
+	protected $fillable = ['name', 'measurement', 'default_quantity'];
 	public function recipe() : BelongsToMany
 	{
 		return $this->belongsToMany(Recipe::class);
