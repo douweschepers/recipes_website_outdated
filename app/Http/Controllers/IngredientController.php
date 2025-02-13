@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreIngredientRequest;
 use App\Http\Requests\UpdateIngredientRequest;
 use App\Models\Ingredient;
+use App\Models\Recipe;
 
 class IngredientController extends Controller
 {
@@ -13,6 +14,8 @@ class IngredientController extends Controller
      */
     public function index()
     {
+	    $ingredients = Ingredient::class->latest()->simplePaginate(8);
+	    return view('recipes/index', [ "ingredients" => $ingredients]);
         //
     }
 
@@ -30,7 +33,6 @@ class IngredientController extends Controller
      */
     public function store(StoreIngredientRequest $request)
     {
-//		dd('hello from controller');
         // store the ingredient
 	    $request->validate([
 		    'name' => ['required'],
@@ -42,8 +44,9 @@ class IngredientController extends Controller
 		    'measurement' => request('measurement'),
 		    'default_quantity' => request('defaultQuantity'),
 	    ]);
-
-    }
+		// only show message of creation
+	    return response()->json(['message' => 'Data saved successfully!']);
+	}
 
     /**
      * Display the specified resource.

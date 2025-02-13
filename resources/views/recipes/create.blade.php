@@ -1,4 +1,5 @@
 <x-app-layout>
+    <script src="//unpkg.com/alpinejs" defer></script>
     <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-4 m-6">
         <div class="col-span-4">
             <div class="m-6">
@@ -66,6 +67,11 @@
                                     </div>
                                 </div>
 
+                                {{-- fetch all the available in the ingredients from db, limit to 10 and make clickable --}}
+                                <div>
+
+                                </div>
+
                                 <div class="col-span-full">
                                     <label
                                             for="instructions"
@@ -98,10 +104,21 @@
                 </form>
             </div>
         </div>
-{{--        <button wire:click="$set('show', true)">Show component 1</button--}}
 
-        <div class="col-span-1 ">
-            @include('ingredients.create')
+        <div x-data="{ isVisible: false }" class="col-span-1 transition-opacity duration-300">
+            <!-- Toggle Button -->
+            <button
+                    @click="isVisible = !isVisible"
+                    class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition"
+            >
+                <span x-show="!isVisible">Create ingredient</span>
+                <span x-show="isVisible">Hide</span>
+            </button>
+
+            <!-- Content to Show/Hide -->
+            <div x-show="isVisible" class="mt-4 p-4 bg-gray-100 rounded-lg shadow-md transition-opacity duration-300">
+                @include('ingredients.create')
+            </div>
         </div>
     </div>
 
