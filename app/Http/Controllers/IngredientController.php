@@ -14,8 +14,8 @@ class IngredientController extends Controller
      */
     public function index()
     {
-	    $ingredients = Ingredient::class->latest()->simplePaginate(8);
-	    return view('recipes/index', [ "ingredients" => $ingredients]);
+	    $ingredients = Ingredient::query()->latest()->simplePaginate(8);
+	    return [ "ingredients" => $ingredients];
         //
     }
 

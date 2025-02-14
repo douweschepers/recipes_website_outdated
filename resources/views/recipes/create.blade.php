@@ -4,6 +4,7 @@
         <div class="col-span-4">
             <div class="m-6">
                 <form
+                        @submit.prevent="submitForm"
                         method="POST"
                         action="{{ route('recipe.store') }}">
                     @csrf
@@ -68,9 +69,25 @@
                                 </div>
 
                                 {{-- fetch all the available in the ingredients from db, limit to 10 and make clickable --}}
-                                <div>
+                                <div id="ingredient-list" class="space-y-2 col-span-full">
+                                    @foreach($ingredients as $ingredient)
+                                        <div class="ingredient-item flex items-center justify-between p-4 border border-gray-300 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-200"
+                                             onclick="toggleSelection(this, {{$ingredient}})">
 
+                                            <!-- Ingredient Name & Measurement -->
+                                            <span class="ingredient-name font-semibold">
+                                                {{ $ingredient->name }} ({{ $ingredient->measurement }})
+                                            </span>
+                                            <!-- Editable Quantity Input -->
+                                            <label>
+                                                <input type="number" value="{{ $ingredient->default_quantity }}"
+                                                       class="default-quantity w-16 p-1 border rounded-md text-center"
+                                                       onchange="updateQuantity(this, {{ $ingredient }})">
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
+
 
                                 <div class="col-span-full">
                                     <label
@@ -123,3 +140,64 @@
     </div>
 
 </x-app-layout>
+
+<script>
+    let selectedIngredients = [];
+
+    function toggleSelection(element, ingredient) {
+	    element.classList.toggle('bg-green-500');
+	    // element.classList.toggle('text-white');
+	    let id = ingredient.id;
+		let quantity = ingredient.default_quantity
+
+	    if (element.classList.contains('bg-green-500')) {
+		    // Add ingredient to the array
+		    selectedIngredients.push({ id , quantity });
+	    } else {
+		    // Remove ingredient from the array
+		    selectedIngredients = selectedIngredients.filter(ingredient => ingredient.id !== id);
+	    }
+	    console.log(selectedIngredients); // Debugging output
+    }
+
+    function updateQuantity(element, ingredient) {
+        // let itemToUpdate = selectedIngredients.find(ingredient.id);
+	    // itemToUpdate.quantity = element.value;
+        console.log("new value is:" + element.value)
+        console.log("id is: " + ingredient.id)
+	    let updatedQuantity = Number(element.value);
+	    selectedIngredients = selectedIngredients.map(ing =>
+		    ing.id === ingredient.id ? {
+			    ...ing,
+			    quantity: updatedQuantity
+		    } : ing
+	    );
+
+	    console.log(selectedIngredients);
+    }// Debugging output
+    document.addEventListener('DOMContentLoaded', function () {
+	    function submitForm () {
+		    fetch("{{ route('recipe.store') }}", {
+			    method: "POST",
+			    headers: {
+				    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+				    "Content-Type": "application/json",
+			    },
+			    body: JSON.stringify({
+				    name: document.getElementById('title').value,
+				    measurement: document.getElementById('description').value,
+				    defaultQuantity: document.getElementById('instructions').value,
+			    }),
+		    })
+			    .then(response => response.json())
+			    .then(data => {
+
+					alert("now it should save the ingredients")
+			    })
+			    .catch(error => {
+				    console.log(error);
+				    showModal("Something went wrong!");
+			    });
+	    }
+    });
+</script>

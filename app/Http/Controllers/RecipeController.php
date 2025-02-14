@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\RecipePosted;
+use App\Models\Ingredient;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -24,7 +25,9 @@ class RecipeController extends Controller
      */
     public function create()
     {
-		return view('recipes/create');
+	    $ingredients = Ingredient::query()->latest()->simplePaginate(8);
+
+	    return view('recipes/create', ["ingredients"=>$ingredients]);
     }
 
     /**
