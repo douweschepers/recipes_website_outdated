@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\Mail;
 
 class RecipeController extends Controller
 {
-    /**
+	protected IngredientController $ingredientContoller;
+
+	public function __construct(IngredientController $ingredientContoller)
+	{
+		$this->ingredientContoller = $ingredientContoller;
+	}
+	/**
      * Display a listing of the resource.
      */
     public function index()
@@ -35,17 +41,23 @@ class RecipeController extends Controller
      */
     public function store(Request $request)
     {
+//		dd($request);
 	    $request->validate([
 		    'title' => ['required', 'min:3'],
 		    'description' => ['required'],
 	    ]);
 
-	    Recipe::create([
+	    $recipe = Recipe::create([
 		    'title' => request('title'),
 		    'description' => request('description'),
 		    'instructions' => request('instructions'),
 		    'user_id' => auth()->id()
 	    ]);
+
+		$this->ingredientContoller->storeIngredientRecipe($request, $recipe->id);
+
+
+	    // send email to the employer
 
 //	    Mail::to($recipe->employer->user)->queue(
 //		    new RecipePosted($recipe)

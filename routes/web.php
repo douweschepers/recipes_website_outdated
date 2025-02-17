@@ -13,6 +13,10 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/douwe', function(){
+	return response()->json(['message' => 'hello']);
+})->name('douwe');
+
 Route::middleware('auth')->group(function () {
 	// Show all recipes
 	Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');

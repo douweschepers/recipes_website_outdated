@@ -4,7 +4,7 @@
         <div class="col-span-4">
             <div class="m-6">
                 <form
-                        @submit.prevent="submitForm"
+                        id="create-recipe-form"
                         method="POST"
                         action="{{ route('recipe.store') }}">
                     @csrf
@@ -161,10 +161,6 @@
     }
 
     function updateQuantity(element, ingredient) {
-        // let itemToUpdate = selectedIngredients.find(ingredient.id);
-	    // itemToUpdate.quantity = element.value;
-        console.log("new value is:" + element.value)
-        console.log("id is: " + ingredient.id)
 	    let updatedQuantity = Number(element.value);
 	    selectedIngredients = selectedIngredients.map(ing =>
 		    ing.id === ingredient.id ? {
@@ -175,29 +171,110 @@
 
 	    console.log(selectedIngredients);
     }// Debugging output
-    document.addEventListener('DOMContentLoaded', function () {
-	    function submitForm () {
-		    fetch("{{ route('recipe.store') }}", {
-			    method: "POST",
-			    headers: {
-				    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
-				    "Content-Type": "application/json",
-			    },
-			    body: JSON.stringify({
-				    name: document.getElementById('title').value,
-				    measurement: document.getElementById('description').value,
-				    defaultQuantity: document.getElementById('instructions').value,
-			    }),
-		    })
-			    .then(response => response.json())
-			    .then(data => {
+    // document.addEventListener('DOMContentLoaded', function () {
+	//     function submitForm() {
+    document.querySelector('#create-recipe-form').addEventListener('submit', (e) => {
+	    e.preventDefault();
+	    // var formData = new FormData(e.target);
+	    var formData = new FormData(document.querySelector('#create-recipe-form'))
 
-					alert("now it should save the ingredients")
-			    })
-			    .catch(error => {
-				    console.log(error);
-				    showModal("Something went wrong!");
-			    });
-	    }
+	    console.log(document.querySelector('meta[name="csrf-token"]').content);
+	    formData.append( 'ingredients', selectedIngredients);
+		    //     title: document.getElementById('title').value,
+		    //     description: document.getElementById('description').value,
+		    //     instructions: document.getElementById('instructions').value,
+		    //     ingredients: selectedIngredients
+		    // }),
+	    fetch('http://localhost:8080/recipe', {
+		    method: 'POST',
+		    headers: {
+			    'Accept': 'application/json',  // Adjust based on expected response
+			    '_token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+		    },
+            	    body: formData
+	    })
+		    .then(response => {
+			    if (!response.ok) {
+				    // If response is not ok, handle the error (maybe a redirect)
+				    return response.text().then(text => {
+					    throw new Error(text);  // This will log the HTML content (likely a redirect page)
+				    });
+			    }
+			    return response.json();  // Proceed with JSON if the response is okay
+            })
+		    .then(data => console.log(data))
+		    .catch(error => console.log('Error:', error ));
+
+	    {{--fetch("{{ route('douwe') }}", {--}}
+		{{--	    method: "GET",--}}
+		{{--	    headers: {--}}
+		{{--		    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,--}}
+		{{--		    "Content-Type": "application/json",--}}
+		{{--	    },--}}
+		{{--	    // body: formData--}}
+        {{--            // JSON.stringify({--}}
+		{{--		    // title: document.getElementById('title').value,--}}
+		{{--		    // description: document.getElementById('description').value,--}}
+		{{--		    // instructions: document.getElementById('instructions').value,--}}
+		{{--		    // ingredients: selectedIngredients--}}
+		{{--	    // }),--}}
+		{{--    })--}}
+		{{--	    .then(response => {--}}
+		{{--		    if (!response.ok) {--}}
+		{{--				console.log(response.text());--}}
+		{{--			    throw new Error("HTTP status " + response.status);--}}
+		{{--		    }--}}
+		{{--		    return response.json();--}}
+		{{--	    })--}}
+		{{--	    .then(data => {--}}
+		{{--		    console.log("Recipe saved:", data);--}}
+		{{--	    })--}}
+		{{--	    .catch(error => {--}}
+		{{--		    console.error("Error:", error);--}}
+		{{--	    });--}}
+
+
+	    window.submitForm = submitForm;
     });
+
+    {{--document.addEventListener('DOMContentLoaded', function () {--}}
+	{{--    function submitForm () {--}}
+	{{--	    fetch("{{ route('recipe.store') }}", {--}}
+	{{--		    method: "POST",--}}
+	{{--		    headers: {--}}
+	{{--			    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,--}}
+	{{--			    "Content-Type": "application/json",--}}
+	{{--		    },--}}
+	{{--		    // body: JSON.stringify({--}}
+	{{--			//     name: document.getElementById('title').value,--}}
+	{{--			//     measurement: document.getElementById('description').value,--}}
+	{{--			//     defaultQuantity: document.getElementById('instructions').value,--}}
+    {{--            //     ingredients: selectedIngredients--}}
+	{{--		    // }),--}}
+	{{--		    body: JSON.stringify({--}}
+	{{--			    title: document.getElementById('title').value,--}}
+	{{--			    description: document.getElementById('description').value,--}}
+	{{--			    instructions: document.getElementById('instructions').value,--}}
+	{{--			    ingredients: selectedIngredients--}}
+	{{--		    }),--}}
+
+	{{--	    })--}}
+	{{--		    .then(response => {--}}
+	{{--			    if (!response.ok) {--}}
+	{{--				    throw new Error("HTTP status " + response.status);--}}
+	{{--			    }--}}
+	{{--				console.log("now it should save the ingredients part 1")--}}
+	{{--			    return response.json();--}}
+    {{--            })--}}
+	{{--		    .then(data => {--}}
+
+	{{--				console.log("now it should save the ingredients")--}}
+	{{--		    })--}}
+	{{--		    .catch(error => {--}}
+	{{--			    console.log(error);--}}
+	{{--			    showModal("Something went wrong!");--}}
+	{{--		    });--}}
+	{{--    }--}}
+	{{--    window.submitForm = submitForm;--}}
+    {{--});--}}
 </script>
