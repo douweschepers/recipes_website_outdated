@@ -170,21 +170,16 @@
 	    );
 
 	    console.log(selectedIngredients);
-    }// Debugging output
-    // document.addEventListener('DOMContentLoaded', function () {
-	//     function submitForm() {
+    }
     document.querySelector('#create-recipe-form').addEventListener('submit', (e) => {
 	    e.preventDefault();
-	    // var formData = new FormData(e.target);
-	    var formData = new FormData(document.querySelector('#create-recipe-form'))
+	    let formData = new FormData(document.querySelector('#create-recipe-form'))
 
-	    console.log(document.querySelector('meta[name="csrf-token"]').content);
-	    formData.append( 'ingredients', selectedIngredients);
-		    //     title: document.getElementById('title').value,
-		    //     description: document.getElementById('description').value,
-		    //     instructions: document.getElementById('instructions').value,
-		    //     ingredients: selectedIngredients
-		    // }),
+        console.log(JSON.stringify(selectedIngredients));
+
+	    formData.append( 'ingredients', JSON.stringify(selectedIngredients));
+
+        console.log("form data:" + JSON.stringify(formData));
 	    fetch('http://localhost:8080/recipe', {
 		    method: 'POST',
 		    headers: {
@@ -200,7 +195,10 @@
 					    throw new Error(text);  // This will log the HTML content (likely a redirect page)
 				    });
 			    }
-			    return response.json();  // Proceed with JSON if the response is okay
+
+			    window.location.href = "{{ route('recipes.index') }}";
+
+			    // return response.json();  // Proceed with JSON if the response is okay
             })
 		    .then(data => console.log(data))
 		    .catch(error => console.log('Error:', error ));

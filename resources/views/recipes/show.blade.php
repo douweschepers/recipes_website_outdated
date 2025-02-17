@@ -10,11 +10,11 @@
 
         <p class="text-gray-600 text-sm mt-2"> {{$recipe->instructions}}</p>
         <br>
-        <h3>Ingredients:</h3>
+
+        <h3 class="text-gray-800 font-bold mt-2"> Aantal personen: </h3>
+        <h2>Ingredients:</h2>
         @foreach($recipe->ingredients as $ingredient)
-            <p class="text-gray-600 text-sm mt-2"> Name: {{ $ingredient->name }} </p>
-            <p class="text-gray-600 text-sm mt-2"> Measurement: {{ $ingredient->measurement }} </p>
-            <p class="text-gray-600 text-sm mt-2"> Amount: {{ $ingredient->default_quantity }} </p>
+                <p class="col-span-1 text-gray-600 text-sm mt-2"> {{ $ingredient->name }} {{$ingredient->default_quantity}}  {{ $ingredient->measurement }} </p>
         @endforeach
     </div>
 </x-app-layout>

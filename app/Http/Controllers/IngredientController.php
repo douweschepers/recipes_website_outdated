@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreIngredientRequest;
 use App\Http\Requests\UpdateIngredientRequest;
 use App\Models\Ingredient;
-use App\Models\Recipe;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 class IngredientController extends Controller
@@ -47,15 +47,6 @@ class IngredientController extends Controller
 	    ]);
 		// only show message of creation
 	    return response()->json(['message' => 'Data saved successfully!']);
-	}
-	public function storeIngredientRecipe(Request $request, int $recipeId){
-//		dd($request);
-		$recipeIngredients = request('ingredients');
-		foreach($recipeIngredients as $recipeIngredient){
-			dd($recipeIngredient);
-			DB::insert('INSERT INTO ingredient_recipe (recipe_id, ingredient_id, quantity) VALUES (?, ?, ?)',
-				[$recipeId, $recipeIngredient->id, $recipeIngredient->quantity]);
-		}
 	}
 
     /**

@@ -6,6 +6,7 @@ use App\Mail\RecipePosted;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class RecipeController extends Controller
@@ -53,9 +54,12 @@ class RecipeController extends Controller
 		    'instructions' => request('instructions'),
 		    'user_id' => auth()->id()
 	    ]);
+	    $recipeIngredients = json_decode(request('ingredients'));
 
-		$this->ingredientContoller->storeIngredientRecipe($request, $recipe->id);
-
+	    foreach($recipeIngredients as $recipeIngredient){
+		    DB::insert('INSERT INTO ingredient_recipe (recipe_id, ingredient_id, quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
+			    [$recipe->id, $recipeIngredient->id, $recipeIngredient->quantity, now(), now()]);
+	    }
 
 	    // send email to the employer
 
