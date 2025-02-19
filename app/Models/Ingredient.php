@@ -14,6 +14,6 @@ class Ingredient extends Model
 	protected $fillable = ['name', 'measurement', 'default_quantity'];
 	public function recipe() : BelongsToMany
 	{
-		return $this->belongsToMany(Recipe::class);
+		return $this->belongsToMany(Recipe::class)->withPivot('quantity')->withTimestamps();
 	}
 }

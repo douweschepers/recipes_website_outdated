@@ -3,6 +3,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-4 m-6">
         <div class="col-span-4">
             <div class="m-6">
+
+
                 <form
                         id="create-recipe-form"
                         method="POST"
@@ -38,7 +40,6 @@
                         </div>
 
                         <div class="border-b border-gray-900/10 pb-12">
-
                             <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                 <div class="col-span-full">
                                     <label
@@ -47,6 +48,7 @@
                                     </label>
                                     <div class="mt-2">
                                         <input
+                                                value="title van het recept"
                                                 type="text"
                                                 name="title"
                                                 id="title"
@@ -61,6 +63,7 @@
                                     </label>
                                     <div class="mt-2">
                                         <input
+                                                value="description van het recept"
                                                 type="text"
                                                 name="description"
                                                 id="description"
@@ -68,9 +71,29 @@
                                     </div>
                                 </div>
 
+{{--                                <label for="searchText"></label>--}}
+                                <div class="flex space-x-2 w-full">
+                                    <!-- Wider Search Input -->
+                                    <div class="flex-grow">
+                                        <label for="searchText">
+                                            <input type="search"
+                                                   id="searchText"
+                                                   placeholder="Search ingredients..."
+                                                   class="col-span-full items-center justify-between p-4 border border-gray-300 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-200"
+                                            >
+                                        </label>
+                                    </div>
+                                    <div>
+                                    <button type="button"
+                                            id="search"
+                                            class="flex items-center justify-between p-4 border border-gray-300 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-200">find!</button>
+
+                                    </div>
+                                </div>
                                 {{-- fetch all the available in the ingredients from db, limit to 10 and make clickable --}}
                                 <div id="ingredient-list" class="space-y-2 col-span-full">
-                                    @foreach($ingredients as $ingredient)
+                                    @foreach($ingredients as $index => $ingredient)
+                                        @if($index < 10)
                                         <div class="ingredient-item flex items-center justify-between p-4 border border-gray-300 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-200"
                                              onclick="toggleSelection(this, {{$ingredient}})">
 
@@ -85,8 +108,10 @@
                                                        onchange="updateQuantity(this, {{ $ingredient }})">
                                             </label>
                                         </div>
+                                        @endif
                                     @endforeach
                                 </div>
+                                {{$ingredients->links()}}
 
 
                                 <div class="col-span-full">
@@ -96,6 +121,7 @@
                                     </label>
                                     <div class="mt-2">
                                         <textarea
+                                                value="instructions van het recept"
                                                 name="instructions"
                                                 id="instructions"
                                                 rows="3"
@@ -171,6 +197,51 @@
 
 	    console.log(selectedIngredients);
     }
+
+    function filterResults() {
+	    searchString = document.querySelector('#searchText').value;
+
+	    fetch('http://localhost:8080/ingredients/search?query=' + searchString, {
+		    method: 'GET',
+		    headers: {
+			    'Accept': 'application/json',  // Adjust based on expected response
+		    },
+	    })
+		    .then(response => {
+			    if (!response.ok) {
+				    // If response is not ok, handle the error (maybe a redirect)
+				    return response.text().then(text => {
+					    throw new Error(text);  // This will log the HTML content (likely a redirect page)
+				    });
+			    }
+			    return response.json();
+		    })
+		    .then(data => {
+			    let ingredientList = document.getElementById('ingredient-list');
+			    ingredientList.innerHTML = ''; // Clear the existing list
+
+			    // Populate the new list with search results
+			    data.forEach(ingredient => {
+				    let ingredientItem = `
+                                <div class="ingredient-item flex items-center justify-between p-4 border border-gray-300 rounded-md cursor-pointer transition-all duration-200 hover:bg-gray-200"
+                                     onclick="toggleSelection(this, ${ingredient.id})">
+                                    <span class="ingredient-name font-semibold">
+                                        ${ingredient.name} (${ingredient.measurement})
+                                    </span>
+                                    <label>
+                                        <input type="number" value="${ingredient.default_quantity}"
+                                               class="default-quantity w-16 p-1 border rounded-md text-center"
+                                               onchange="updateQuantity(this, ${ingredient.id})">
+                                    </label>
+                                </div>
+                            `;
+				    ingredientList.innerHTML += ingredientItem;
+			    })
+		    })
+            .catch(error => console.log('Error:', error));
+    }
+    document.getElementById('search').addEventListener('click', filterResults);
+
     document.querySelector('#create-recipe-form').addEventListener('submit', (e) => {
 	    e.preventDefault();
 	    let formData = new FormData(document.querySelector('#create-recipe-form'))
@@ -202,77 +273,9 @@
             })
 		    .then(data => console.log(data))
 		    .catch(error => console.log('Error:', error ));
-
-	    {{--fetch("{{ route('douwe') }}", {--}}
-		{{--	    method: "GET",--}}
-		{{--	    headers: {--}}
-		{{--		    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,--}}
-		{{--		    "Content-Type": "application/json",--}}
-		{{--	    },--}}
-		{{--	    // body: formData--}}
-        {{--            // JSON.stringify({--}}
-		{{--		    // title: document.getElementById('title').value,--}}
-		{{--		    // description: document.getElementById('description').value,--}}
-		{{--		    // instructions: document.getElementById('instructions').value,--}}
-		{{--		    // ingredients: selectedIngredients--}}
-		{{--	    // }),--}}
-		{{--    })--}}
-		{{--	    .then(response => {--}}
-		{{--		    if (!response.ok) {--}}
-		{{--				console.log(response.text());--}}
-		{{--			    throw new Error("HTTP status " + response.status);--}}
-		{{--		    }--}}
-		{{--		    return response.json();--}}
-		{{--	    })--}}
-		{{--	    .then(data => {--}}
-		{{--		    console.log("Recipe saved:", data);--}}
-		{{--	    })--}}
-		{{--	    .catch(error => {--}}
-		{{--		    console.error("Error:", error);--}}
-		{{--	    });--}}
-
-
 	    window.submitForm = submitForm;
     });
 
-    {{--document.addEventListener('DOMContentLoaded', function () {--}}
-	{{--    function submitForm () {--}}
-	{{--	    fetch("{{ route('recipe.store') }}", {--}}
-	{{--		    method: "POST",--}}
-	{{--		    headers: {--}}
-	{{--			    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,--}}
-	{{--			    "Content-Type": "application/json",--}}
-	{{--		    },--}}
-	{{--		    // body: JSON.stringify({--}}
-	{{--			//     name: document.getElementById('title').value,--}}
-	{{--			//     measurement: document.getElementById('description').value,--}}
-	{{--			//     defaultQuantity: document.getElementById('instructions').value,--}}
-    {{--            //     ingredients: selectedIngredients--}}
-	{{--		    // }),--}}
-	{{--		    body: JSON.stringify({--}}
-	{{--			    title: document.getElementById('title').value,--}}
-	{{--			    description: document.getElementById('description').value,--}}
-	{{--			    instructions: document.getElementById('instructions').value,--}}
-	{{--			    ingredients: selectedIngredients--}}
-	{{--		    }),--}}
 
-	{{--	    })--}}
-	{{--		    .then(response => {--}}
-	{{--			    if (!response.ok) {--}}
-	{{--				    throw new Error("HTTP status " + response.status);--}}
-	{{--			    }--}}
-	{{--				console.log("now it should save the ingredients part 1")--}}
-	{{--			    return response.json();--}}
-    {{--            })--}}
-	{{--		    .then(data => {--}}
-
-	{{--				console.log("now it should save the ingredients")--}}
-	{{--		    })--}}
-	{{--		    .catch(error => {--}}
-	{{--			    console.log(error);--}}
-	{{--			    showModal("Something went wrong!");--}}
-	{{--		    });--}}
-	{{--    }--}}
-	{{--    window.submitForm = submitForm;--}}
-    {{--});--}}
+    // Make AJAX request to fetch filtered results
 </script>

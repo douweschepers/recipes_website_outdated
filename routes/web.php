@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
 	// Store new recipe
 	Route::post('/recipe', [RecipeController::class, 'store'])->name('recipe.store');
+	Route::GET('/ingredients/search',[IngredientController::class, 'search'])->name('ingredients.search');
 });
 
 

@@ -32,7 +32,7 @@ class RecipeController extends Controller
      */
     public function create()
     {
-	    $ingredients = Ingredient::query()->latest()->simplePaginate(8);
+	    $ingredients = Ingredient::query()->simplePaginate(8);
 
 	    return view('recipes/create', ["ingredients"=>$ingredients]);
     }
@@ -54,11 +54,15 @@ class RecipeController extends Controller
 		    'instructions' => request('instructions'),
 		    'user_id' => auth()->id()
 	    ]);
-	    $recipeIngredients = json_decode(request('ingredients'));
 
+	    $recipeIngredients = json_decode(request('ingredients'));
+//		dd($recipeIngredients);
 	    foreach($recipeIngredients as $recipeIngredient){
-		    DB::insert('INSERT INTO ingredient_recipe (recipe_id, ingredient_id, quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
-			    [$recipe->id, $recipeIngredient->id, $recipeIngredient->quantity, now(), now()]);
+		    $recipe->ingredients()->attach([
+				$recipeIngredient->id => ['quantity' => $recipeIngredient->quantity]
+		    ]);
+//		    DB::insert('INSERT INTO ingredient_recipe (recipe_id, ingredient_id, quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
+//			    [$recipe->id, $recipeIngredient->id, $recipeIngredient->quantity, now(), now()]);
 	    }
 
 	    // send email to the employer

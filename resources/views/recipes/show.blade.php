@@ -14,7 +14,7 @@
         <h3 class="text-gray-800 font-bold mt-2"> Aantal personen: </h3>
         <h2>Ingredients:</h2>
         @foreach($recipe->ingredients as $ingredient)
-                <p class="col-span-1 text-gray-600 text-sm mt-2"> {{ $ingredient->name }} {{$ingredient->default_quantity}}  {{ $ingredient->measurement }} </p>
+                <p class="col-span-1 text-gray-600 text-sm mt-2"> {{ $ingredient->name }} {{$ingredient->pivot->quantity}}  {{ $ingredient->measurement }} </p>
         @endforeach
     </div>
 </x-app-layout>

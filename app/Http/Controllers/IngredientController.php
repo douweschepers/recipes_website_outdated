@@ -80,4 +80,14 @@ class IngredientController extends Controller
     {
         //
     }
+
+	public function search(Request $request)
+	{
+		$search = $request->input('query');
+		$ingredients = Ingredient::where('name', 'LIKE', "%{$search}%")
+			->limit(10) // Return only 10 results
+			->get();
+
+		return response()->json($ingredients);
+	}
 }

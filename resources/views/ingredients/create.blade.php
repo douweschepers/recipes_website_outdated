@@ -1,4 +1,8 @@
 <script src="//unpkg.com/alpinejs" defer></script>
+@php
+    use App\Enums\IngredientMeasurementsEnum;
+@endphp
+
 <div class="m-2" x-data="{ showToast: false, message: '' }">
     {{--    Submit prevent because I want to override the submit button to use my own logic down in the java--}}
     <form @submit.prevent="submitForm" method="POST" action="{{ route('ingredient.store') }}">
@@ -21,9 +25,14 @@
                     <div class="col-span-full">
                         <label for="measurement" class="block text-sm/6 font-medium text-gray-900">Measurement</label>
                         <div class="mt-2">
-                            <input type="text" name="measurement" id="measurement" x-ref="measurement"
-                                   class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        </div>
+                            <select class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                    id="measurement"
+                                    name="measurement">
+                            @foreach (IngredientMeasurementsEnum::cases() as $measurement)
+                                <option value="{{ $measurement->value }}"> {{$measurement->value}} </option>
+                            @endforeach
+                            </select>
+                      </div>
                     </div>
 
                     <div class="col-span-full">
